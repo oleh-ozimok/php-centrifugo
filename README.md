@@ -64,7 +64,7 @@ try {
 use Centrifugo\Centrifugo\Exceptions\CentrifugoException;
 
 try {
-    $requests[] = $centrifugo->request('publish', ['channel' => channel, 'data' => $data]);
+    $requests[] = $centrifugo->request('publish', ['channel' => $channel, 'data' => $data]);
     $requests[] = $centrifugo->request('broadcast', ['channel' => $channel, 'data' => $data]);
     $requests[] = $centrifugo->request('unsubscribe', ['channel' => $channel, 'data' => $data]);
     $requests[] = $centrifugo->request('disconnect', ['channel' => $channel, 'data' => $data]);
