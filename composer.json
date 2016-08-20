@@ -1,0 +1,24 @@
+{
+  "name": "oleh-ozimok/php-centrifugo",
+  "type": "library",
+  "description": "PHP client for Centrifugo real-time messaging server",
+  "keywords": ["centrifugo"],
+  "license": "MIT",
+  "homepage": "https://github.com/oleh-ozimok/php-centrifugo",
+  "version": "1.0",
+  "authors": [
+    {
+      "name": "Oleh Ozimok",
+      "email": "ozimok.oleg@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Centrifugo\\": "src/Centrifugo"
+    }
+  }
+}
