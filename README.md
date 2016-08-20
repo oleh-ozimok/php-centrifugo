@@ -20,7 +20,7 @@ require 'vendor/autoload.php';
 use Centrifugo\Centrifugo;
 
 // Instantiate Centrifugo client.
-$centrifugo = new Centrifugo('http://example.com.com/api/', 'secret api key', [
+$centrifugo = new Centrifugo('http://example.com/api/', 'secret api key', [
     'redis' => [
         'host'         => 'localhost',
         // additional params
@@ -49,7 +49,7 @@ try {
     $response = $centrifugo->history('channel', ['foo' => 'bar']);
     $response = $centrifugo->channels();
     $response = $centrifugo->stats();
-    $response = $centrifugo->node('http://example.com.com/api/');
+    $response = $centrifugo->node('http://example.com/api/');
     
 } catch (CentrifugoException $e){
     // invalid response
