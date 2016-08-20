@@ -13,10 +13,6 @@ use IteratorAggregate;
 class BatchResponse extends Response implements IteratorAggregate, ArrayAccess
 {
     /**
-     * @var BatchRequest
-     */
-    protected $batchRequest;
-    /**
      * @var Response[]
      */
     protected $responses = [];
@@ -28,15 +24,8 @@ class BatchResponse extends Response implements IteratorAggregate, ArrayAccess
      */
     public function __construct(BatchRequest $batchRequest, Response $response)
     {
-        $this->batchRequest = $batchRequest;
-        $request = $response->getRequest();
-        $body = $response->getBody();
-
-        parent::__construct($request, $body);
-
-        $responses = $response->getDecodedBody();
-
-        $this->setResponses($responses);
+        parent::__construct($batchRequest, $response->getBody());
+        $this->setResponses($response->getDecodedBody());
     }
 
     /**
@@ -58,7 +47,7 @@ class BatchResponse extends Response implements IteratorAggregate, ArrayAccess
      */
     public function addResponse($key, array $response)
     {
-        $originalRequest = isset($this->batchRequest[$key]) ? $this->batchRequest[$key] : null;
+        $originalRequest = isset($this->request[$key]) ? $this->request[$key] : null;
         $responseBody    = isset($response['body']) ? $response['body'] : null;
         $responseError   = isset($response['error']) ? $response['error'] : null;
         $responseMethod  = isset($response['method']) ? $response['method'] : null;

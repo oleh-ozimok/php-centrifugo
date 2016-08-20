@@ -77,7 +77,7 @@ try {
             $error = $response->getError();
         } else {
             // get response data as array
-            $responseData = $response->decodedBody();
+            $responseData = $response->getDecodedBody();
         }
     }
 
