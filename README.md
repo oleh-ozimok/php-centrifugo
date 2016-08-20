@@ -38,7 +38,7 @@ $centrifugo = new Centrifugo('http://example.com/api/', 'secret api key', [
 ```php
 <?php
 
-use Centrifugo\Centrifugo\Exceptions\CentrifugoException;
+use Centrifugo\Exceptions\CentrifugoException;
 
 try {
     $response = $centrifugo->publish('channel', ['foo' => 'bar']);
@@ -61,7 +61,7 @@ try {
 ```php
 <?php
 
-use Centrifugo\Centrifugo\Exceptions\CentrifugoException;
+use Centrifugo\Exceptions\CentrifugoException;
 
 try {
     $requests[] = $centrifugo->request('publish', ['channel' => $channel, 'data' => $data]);
