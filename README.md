@@ -14,13 +14,13 @@ PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time
 
 ```php
 <?php
-// Require the Composer autoloader.
-require 'vendor/autoload.php';
 
 use Centrifugo\Centrifugo;
 
-// Instantiate Centrifugo client.
-$centrifugo = new Centrifugo('http://example.com/api/', 'secret api key', [
+$endpoint = 'http://example.com/api/';
+$secret = 'secret api key';
+
+$centrifugo = new Centrifugo($endpoint, $secret, [
     'redis' => [
         'host'         => 'localhost',
         // additional params
@@ -40,16 +40,37 @@ $centrifugo = new Centrifugo('http://example.com/api/', 'secret api key', [
 
 use Centrifugo\Exceptions\CentrifugoException;
 
+$userId = 1;
+$channle = '#chan_1'
+$messageData = ['message' => 'Hello, world!'];
+
 try {
-    $response = $centrifugo->publish('channel', ['foo' => 'bar']);
-    $response = $centrifugo->broadcast('channel', ['foo' => 'bar']);
-    $response = $centrifugo->unsubscribe('channel', 'userID');
-    $response = $centrifugo->disconnect('userID');
-    $response = $centrifugo->presence('channel');
-    $response = $centrifugo->history('channel', ['foo' => 'bar']);
+    //Send message into channel.
+    $response = $centrifugo->publish($channle, $messageData);
+    
+    //Very similar to publish but allows to send the same data into many channels.
+    $response = $centrifugo->broadcast($channle, $messageData);
+    
+    //Unsubscribe user from channel.
+    $response = $centrifugo->unsubscribe($channle, $userId);
+    
+    //Disconnect user by user ID.
+    $response = $centrifugo->disconnect($userId);
+    
+    //Get channel presence information (all clients currently subscribed on this channel).
+    $response = $centrifugo->presence($channle);
+    
+    //Get channel history information (list of last messages sent into channel).
+    $response = $centrifugo->history($channle);
+    
+    //Get channels information (list of currently active channels).
     $response = $centrifugo->channels();
+    
+    //Get stats information about running server nodes.
     $response = $centrifugo->stats();
-    $response = $centrifugo->node('http://example.com/api/');
+    
+    //Get information about single Centrifugo node.
+    $response = $centrifugo->node('http://node1.example.com/api/');
     
 } catch (CentrifugoException $e){
     // invalid response
@@ -63,11 +84,15 @@ try {
 
 use Centrifugo\Exceptions\CentrifugoException;
 
+$userId = '1'; //must be a string
+$channle = '#chan_1'
+$messageData = ['message' => 'Hello, world!'];
+
 try {
-    $requests[] = $centrifugo->request('publish', ['channel' => $channel, 'data' => $data]);
-    $requests[] = $centrifugo->request('broadcast', ['channel' => $channel, 'data' => $data]);
-    $requests[] = $centrifugo->request('unsubscribe', ['channel' => $channel, 'user' => (string)$userId);
-    $requests[] = $centrifugo->request('disconnect', ['user' => (string)$userId]);
+    $requests[] = $centrifugo->request('publish', ['channel' => $channel, 'data' => $messageData]);
+    $requests[] = $centrifugo->request('broadcast', ['channel' => $channel, 'data' => $messageData]);
+    $requests[] = $centrifugo->request('unsubscribe', ['channel' => $channel, 'user' => $userId);
+    $requests[] = $centrifugo->request('disconnect', ['user' => $userId]);
     
     $batchResponse = $centrifugo->sendBatchRequest($requests);
     
