@@ -29,7 +29,10 @@ $centrifugo = new Centrifugo($endpoint, $secret, [
         'timeout'      => 0.0,
         'shardsNumber' => 0,
     ],
-    'http' => [] // Curl options,
+    'http' => [
+        // Curl options
+        CURLOPT_TIMEOUT => 5
+    ]
 ]);
 ```
 
