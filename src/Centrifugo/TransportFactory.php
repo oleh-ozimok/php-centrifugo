@@ -56,10 +56,10 @@ abstract class TransportFactory
                 $redisClient = isset($params['port'], $params['timeout'])
                     ? new RedisTransport($params['host'], $params['port'], $params['timeout'])
                     : new RedisTransport($params['host'], $params['port']);
-                if(isset($config['db'])){
+                if(isset($params['db'])){
                     $redisClient->setDb($params['db']);
                 }
-                if(isset($config['shards'])){
+                if(isset($params['shardsNumber'])){
                     $redisClient->setShardsNumber($params['shardsNumber']);
                 }
 
