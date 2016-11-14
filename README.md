@@ -41,6 +41,7 @@ $centrifugo = new Centrifugo($endpoint, $secret, [
 ```php
 <?php
 
+use Centrifugo\Centrifugo;
 use Centrifugo\Exceptions\CentrifugoException;
 
 $userId = 1;
@@ -85,6 +86,7 @@ try {
 ```php
 <?php
 
+use Centrifugo\Centrifugo;
 use Centrifugo\Exceptions\CentrifugoException;
 
 $userId = '1'; //must be a string
