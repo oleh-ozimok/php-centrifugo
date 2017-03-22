@@ -79,11 +79,10 @@ class RedisTransport extends RequestHandler
      * Open Redis connection
      * @throws CentrifugoTransportException
      */
-    public function openConnection()
+    protected function openConnection()
     {
         $this->connection = new Redis();
-        $this->connection->connect($this->host, $this->port, $this->timeout);
-        if(!$this->connection){
+        if(!$this->connection->pconnect($this->host, $this->port, $this->timeout)){
             throw new CentrifugoTransportException('Failed to open redis DB connection.');
         }
         if($this->db && !$this->connection->select($this->db)) {
@@ -94,11 +93,29 @@ class RedisTransport extends RequestHandler
     /**
      * Close connection if opened
      */
-    public function closeConnection()
+    protected function closeConnection()
     {
         if($this->connection){
             $this->connection->close();
         }
+    }
+
+    /**
+     * @return Redis
+     */
+    protected function getConnection()
+    {
+        if(!$this->connection){
+            $this->openConnection();
+        }
+
+        try {
+            $this->connection->ping();
+        } catch (\RedisException $e) {
+            $this->openConnection();
+        }
+
+        return $this->connection;
     }
 
     /**
@@ -109,13 +126,10 @@ class RedisTransport extends RequestHandler
         if(!$this->canProcessRequest($request)) {
             throw new CentrifugoTransportException('RedisTransport can\'t process request.');
         }
-        if (!$this->connection) {
-            $this->openConnection();
-        }
         $queue   = $this->getQueue();
         $message = $this->makeMassage($request);
 
-        if(false === $this->connection->rPush($queue, $message)){
+        if(false === $this->getConnection()->rPush($queue, $message)){
             throw new CentrifugoTransportException('RedisTransport can\'t push to: ' . $queue);
         }
 
