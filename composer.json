@@ -5,7 +5,6 @@
   "keywords": ["centrifugo"],
   "license": "MIT",
   "homepage": "https://github.com/oleh-ozimok/php-centrifugo",
-  "version": "1.0",
   "authors": [
     {
       "name": "Oleh Ozimok",
