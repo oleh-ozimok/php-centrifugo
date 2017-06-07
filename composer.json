@@ -2,7 +2,7 @@
   "name": "oleh-ozimok/php-centrifugo",
   "type": "library",
   "description": "PHP client for Centrifugo real-time messaging server",
-  "keywords": ["centrifugo"],
+  "keywords": ["centrifugo", "real-time"],
   "license": "MIT",
   "homepage": "https://github.com/oleh-ozimok/php-centrifugo",
   "authors": [
