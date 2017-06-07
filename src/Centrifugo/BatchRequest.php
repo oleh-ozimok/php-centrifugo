@@ -20,7 +20,7 @@ class BatchRequest extends Request implements IteratorAggregate, ArrayAccess
 
     /**
      * BatchRequest constructor.
-     * @param array $endpoint
+     * @param string $endpoint
      * @param string $secret
      * @param array $requests
      */
