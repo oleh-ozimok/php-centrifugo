@@ -2,9 +2,9 @@
 
 namespace Centrifugo;
 
+use Centrifugo\Exceptions\CentrifugoTransportException;
 use Centrifugo\Transport\HttpTransport;
 use Centrifugo\Transport\RedisTransport;
-use Centrifugo\Exceptions\CentrifugoTransportException;
 
 /**
  * Class TransportFactory
@@ -12,20 +12,21 @@ use Centrifugo\Exceptions\CentrifugoTransportException;
  */
 abstract class TransportFactory
 {
-    const HTTP_TRANSPORT  = 'http';
+    const HTTP_TRANSPORT = 'http';
     const REDIS_TRANSPORT = 'redis';
 
     /**
      * @param array $config
+     *
      * @return HttpTransport|RedisTransport|null
      * @throws CentrifugoTransportException
      */
     public static function createChain(array $config)
     {
         $chain = null;
-        foreach ($config as $transportType => $params){
+        foreach ($config as $transportType => $params) {
             $transport = static::create($transportType, $params);
-            if($chain){
+            if ($chain) {
                 $chain->appendHandler($transport);
             } else {
                 $chain = $transport;
@@ -38,28 +39,29 @@ abstract class TransportFactory
     /**
      * @param string $type
      * @param array $params
+     *
      * @return HttpTransport|RedisTransport
      * @throws CentrifugoTransportException
      */
     public static function create($type, array $params)
     {
-        switch ($type){
+        switch ($type) {
             case self::HTTP_TRANSPORT:
                 return new HttpTransport($params);
             case self::REDIS_TRANSPORT:
                 if (empty($params['host'])) {
                     throw new CentrifugoTransportException('You should specified a host.');
                 }
-                if(isset($params['timeout']) && !isset($params['port'])){
+                if (isset($params['timeout']) && !isset($params['port'])) {
                     throw new CentrifugoTransportException('You should specified a port if you specified a timeout.');
                 }
                 $redisClient = isset($params['port'], $params['timeout'])
                     ? new RedisTransport($params['host'], $params['port'], $params['timeout'])
                     : new RedisTransport($params['host'], $params['port']);
-                if(isset($params['db'])){
+                if (isset($params['db'])) {
                     $redisClient->setDb($params['db']);
                 }
-                if(isset($params['shardsNumber'])){
+                if (isset($params['shardsNumber'])) {
                     $redisClient->setShardsNumber($params['shardsNumber']);
                 }
 

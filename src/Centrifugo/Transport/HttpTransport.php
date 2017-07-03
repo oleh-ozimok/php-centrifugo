@@ -2,10 +2,10 @@
 
 namespace Centrifugo\Transport;
 
-use Exception;
+use Centrifugo\Exceptions\CentrifugoTransportException;
 use Centrifugo\Request;
 use Centrifugo\RequestHandler;
-use Centrifugo\Exceptions\CentrifugoTransportException;
+use Exception;
 
 /**
  * Class HttpTransport
@@ -22,6 +22,7 @@ class HttpTransport extends RequestHandler
 
     /**
      * HttpClient constructor.
+     *
      * @param array $options
      */
     public function __construct(array $options = [])
@@ -52,7 +53,7 @@ class HttpTransport extends RequestHandler
                 throw new CentrifugoTransportException('HttpClient return invalid response code: ' . $httpCode);
             }
             curl_close($connection);
-        } catch (Exception $exception){
+        } catch (Exception $exception) {
             curl_close($connection);
             throw $exception;
         }

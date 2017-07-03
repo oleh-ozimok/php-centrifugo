@@ -27,6 +27,7 @@ class Request
 
     /**
      * Request constructor.
+     *
      * @param string $endpoint
      * @param string $secret
      * @param string $method
@@ -35,9 +36,9 @@ class Request
     public function __construct($endpoint, $secret, $method, array $params)
     {
         $this->endpoint = $endpoint;
-        $this->secret   = $secret;
-        $this->method   = $method;
-        $this->params   = $params;
+        $this->secret = $secret;
+        $this->method = $method;
+        $this->params = $params;
     }
 
     /**
@@ -71,7 +72,7 @@ class Request
     {
         return json_encode($this->toArray());
     }
-    
+
     /**
      * @return array
      */
@@ -79,10 +80,10 @@ class Request
     {
         return [
             'Content-Type: application/json',
-            'X-API-Sign: ' . $this->generateHashSign()
+            'X-API-Sign: ' . $this->generateHashSign(),
         ];
     }
-    
+
     /**
      * @return array
      */

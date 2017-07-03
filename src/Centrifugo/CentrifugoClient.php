@@ -15,6 +15,7 @@ class CentrifugoClient
 
     /**
      * CentrifugoClient constructor.
+     *
      * @param RequestHandler $transport
      */
     public function __construct(RequestHandler $transport)
@@ -24,13 +25,14 @@ class CentrifugoClient
 
     /**
      * @param Request $request
+     *
      * @return Response
      * @throws Exceptions\CentrifugoException
      * @throws \Exception
      */
     public function sendRequest(Request $request)
     {
-        $rawResponse    = $this->transport->sendRequest($request);
+        $rawResponse = $this->transport->sendRequest($request);
         $returnResponse = new Response($request, $rawResponse);
 
         if ($returnResponse->isError()) {
@@ -42,6 +44,7 @@ class CentrifugoClient
 
     /**
      * @param BatchRequest $request
+     *
      * @return BatchResponse
      */
     public function sendBatchRequest(BatchRequest $request)
