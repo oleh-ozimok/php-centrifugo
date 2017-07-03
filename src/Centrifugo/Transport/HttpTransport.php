@@ -5,7 +5,6 @@ namespace Centrifugo\Transport;
 use Centrifugo\Exceptions\CentrifugoTransportException;
 use Centrifugo\Request;
 use Centrifugo\RequestHandler;
-use Exception;
 
 /**
  * Class HttpTransport
@@ -43,19 +42,22 @@ class HttpTransport extends RequestHandler
                 CURLOPT_HTTPHEADER     => $request->getHeaders(),
                 CURLOPT_POSTFIELDS     => $request->getEncodedParams(),
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST           => true
+                CURLOPT_POST           => true,
             ]);
+
             $rawResponse = curl_exec($connection);
+
             if (curl_errno($connection)) {
                 throw new CentrifugoTransportException('HttpClient CURL error: ' . curl_error($connection));
             }
-            if (($httpCode = curl_getinfo($connection, CURLINFO_HTTP_CODE)) != self::HTTP_CODE_OK) {
+
+            $httpCode = curl_getinfo($connection, CURLINFO_HTTP_CODE);
+
+            if ($httpCode != self::HTTP_CODE_OK) {
                 throw new CentrifugoTransportException('HttpClient return invalid response code: ' . $httpCode);
             }
+        } finally {
             curl_close($connection);
-        } catch (Exception $exception) {
-            curl_close($connection);
-            throw $exception;
         }
 
         return $rawResponse;
