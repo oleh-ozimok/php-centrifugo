@@ -48,24 +48,32 @@ abstract class TransportFactory
         switch ($type) {
             case self::HTTP_TRANSPORT:
                 return new HttpTransport($params);
+
             case self::REDIS_TRANSPORT:
                 if (empty($params['host'])) {
                     throw new CentrifugoTransportException('You should specified a host.');
                 }
+
                 if (isset($params['timeout']) && !isset($params['port'])) {
                     throw new CentrifugoTransportException('You should specified a port if you specified a timeout.');
                 }
-                $redisClient = isset($params['port'], $params['timeout'])
-                    ? new RedisTransport($params['host'], $params['port'], $params['timeout'])
-                    : new RedisTransport($params['host'], $params['port']);
+
+                if (isset($params['port'], $params['timeout'])) {
+                    $redisClient = new RedisTransport($params['host'], $params['port'], $params['timeout']);
+                } else {
+                    $redisClient = new RedisTransport($params['host'], $params['port']);
+                }
+
                 if (isset($params['db'])) {
                     $redisClient->setDb($params['db']);
                 }
+
                 if (isset($params['shardsNumber'])) {
                     $redisClient->setShardsNumber($params['shardsNumber']);
                 }
 
                 return $redisClient;
+
             default:
                 throw new CentrifugoTransportException('Unknown transport type: ' . $type);
         }
