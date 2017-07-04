@@ -4,11 +4,12 @@ namespace Centrifugo;
 
 use ArrayAccess;
 use ArrayIterator;
-use IteratorAggregate;
 use InvalidArgumentException;
+use IteratorAggregate;
 
 /**
  * Class BatchRequest
+ *
  * @package Centrifugo
  */
 class BatchRequest extends Request implements IteratorAggregate, ArrayAccess
@@ -20,6 +21,7 @@ class BatchRequest extends Request implements IteratorAggregate, ArrayAccess
 
     /**
      * BatchRequest constructor.
+     *
      * @param string $endpoint
      * @param string $secret
      * @param array $requests
@@ -33,16 +35,18 @@ class BatchRequest extends Request implements IteratorAggregate, ArrayAccess
 
     /**
      * @param $request
+     *
      * @return $this
      * @throws InvalidArgumentException
      */
     public function add($request)
     {
-        if(is_array($request)){
+        if (is_array($request)) {
             array_walk($request, [$this, __METHOD__]);
 
             return $this;
         }
+
         if (!$request instanceof Request) {
             throw new InvalidArgumentException('Argument for add() must be of type array or Request.');
         }
@@ -58,7 +62,7 @@ class BatchRequest extends Request implements IteratorAggregate, ArrayAccess
     public function toArray()
     {
         $array = [];
-        foreach ($this->requests as $request){
+        foreach ($this->requests as $request) {
             $array[] = $request->toArray();
         }
 

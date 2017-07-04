@@ -38,17 +38,18 @@ class Response
 
     /**
      * Response constructor.
+     *
      * @param Request $request
-     * @param $body
+     * @param array $body
      * @param null $error
      * @param null $method
      */
     public function __construct(Request $request, $body, $error = null, $method = null)
     {
         $this->request = $request;
-        $this->body    = $body;
-        $this->error   = $error;
-        $this->method  = $method;
+        $this->body = $body;
+        $this->error = $error;
+        $this->method = $method;
         $this->decodeBody();
     }
 
@@ -109,7 +110,7 @@ class Response
     {
         throw $this->thrownException;
     }
-    
+
     /**
      * Instantiates an exception to be thrown later.
      */

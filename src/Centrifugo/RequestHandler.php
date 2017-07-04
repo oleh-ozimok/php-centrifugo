@@ -29,6 +29,7 @@ abstract class RequestHandler
 
     /**
      * @param Request $request
+     *
      * @return string
      * @throws Exception
      */
@@ -48,6 +49,7 @@ abstract class RequestHandler
 
     /**
      * @param Request $request
+     *
      * @return string
      */
     abstract protected function processing(Request $request);

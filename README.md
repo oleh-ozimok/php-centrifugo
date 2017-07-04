@@ -24,15 +24,15 @@ $centrifugo = new Centrifugo($endpoint, $secret, [
     'redis' => [
         'host'         => 'localhost',
         // additional params
-        'port'         => 6379
+        'port'         => 6379,
         'db'           => 0,
         'timeout'      => 0.0,
         'shardsNumber' => 0,
     ],
     'http' => [
         // Curl options
-        CURLOPT_TIMEOUT => 5
-    ]
+        CURLOPT_TIMEOUT => 5,
+    ],
 ]);
 ```
 
@@ -45,27 +45,27 @@ use Centrifugo\Centrifugo;
 use Centrifugo\Exceptions\CentrifugoException;
 
 $userId = 1;
-$channle = '#chan_1'
+$channel = '#chan_1';
 $messageData = ['message' => 'Hello, world!'];
 
 try {
     //Send message into channel.
-    $response = $centrifugo->publish($channle, $messageData);
+    $response = $centrifugo->publish($channel, $messageData);
     
     //Very similar to publish but allows to send the same data into many channels.
-    $response = $centrifugo->broadcast($channle, $messageData);
+    $response = $centrifugo->broadcast($channel, $messageData);
     
     //Unsubscribe user from channel.
-    $response = $centrifugo->unsubscribe($channle, $userId);
+    $response = $centrifugo->unsubscribe($channel, $userId);
     
     //Disconnect user by user ID.
     $response = $centrifugo->disconnect($userId);
     
     //Get channel presence information (all clients currently subscribed on this channel).
-    $response = $centrifugo->presence($channle);
+    $response = $centrifugo->presence($channel);
     
     //Get channel history information (list of last messages sent into channel).
-    $response = $centrifugo->history($channle);
+    $response = $centrifugo->history($channel);
     
     //Get channels information (list of currently active channels).
     $response = $centrifugo->channels();
@@ -75,8 +75,7 @@ try {
     
     //Get information about single Centrifugo node.
     $response = $centrifugo->node('http://node1.example.com/api/');
-    
-} catch (CentrifugoException $e){
+} catch (CentrifugoException $e) {
     // invalid response
 }
 ```
@@ -90,19 +89,19 @@ use Centrifugo\Centrifugo;
 use Centrifugo\Exceptions\CentrifugoException;
 
 $userId = '1'; //must be a string
-$channle = '#chan_1'
+$channel = '#chan_1';
 $messageData = ['message' => 'Hello, world!'];
 
 try {
     $requests[] = $centrifugo->request('publish', ['channel' => $channel, 'data' => $messageData]);
     $requests[] = $centrifugo->request('broadcast', ['channel' => $channel, 'data' => $messageData]);
-    $requests[] = $centrifugo->request('unsubscribe', ['channel' => $channel, 'user' => $userId);
+    $requests[] = $centrifugo->request('unsubscribe', ['channel' => $channel, 'user' => $userId]);
     $requests[] = $centrifugo->request('disconnect', ['user' => $userId]);
     
     $batchResponse = $centrifugo->sendBatchRequest($requests);
     
-    foreach($batchResponse as $response){
-        if($response->isError()){
+    foreach ($batchResponse as $response) {
+        if ($response->isError()) {
             // get error info
             $error = $response->getError();
         } else {
@@ -110,8 +109,7 @@ try {
             $responseData = $response->getDecodedBody();
         }
     }
-
-} catch (CentrifugoException $e){
+} catch (CentrifugoException $e) {
     // invalid response
 }
 ```

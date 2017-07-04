@@ -34,6 +34,7 @@ class CentrifugoResponseException extends CentrifugoException
 
     /**
      * CentrifugoResponseException constructor.
+     *
      * @param Response $response
      * @param CentrifugoException|null $previousException
      */
@@ -54,12 +55,13 @@ class CentrifugoResponseException extends CentrifugoException
 
     /**
      * @param Response $response
+     *
      * @return static
      */
     public static function create(Response $response)
     {
         $errorMessage = $response->getError();
-        $exception    = isset(static::$exceptionMap[$errorMessage])
+        $exception = isset(static::$exceptionMap[$errorMessage])
             ? static::$exceptionMap[$errorMessage]
             : CentrifugoException::class;
 

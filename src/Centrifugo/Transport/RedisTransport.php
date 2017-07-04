@@ -2,11 +2,11 @@
 
 namespace Centrifugo\Transport;
 
-use Redis;
-use Centrifugo\Request;
 use Centrifugo\BatchRequest;
-use Centrifugo\RequestHandler;
 use Centrifugo\Exceptions\CentrifugoTransportException;
+use Centrifugo\Request;
+use Centrifugo\RequestHandler;
+use Redis;
 
 /**
  * Class RedisTransport
@@ -14,7 +14,7 @@ use Centrifugo\Exceptions\CentrifugoTransportException;
  */
 class RedisTransport extends RequestHandler
 {
-    const QUEUE_NAME          = 'centrifugo.api';
+    const QUEUE_NAME = 'centrifugo.api';
     const QUEUE_SHARD_PATTERN = 'centrifugo.api.%u';
 
     /**
@@ -48,14 +48,15 @@ class RedisTransport extends RequestHandler
 
     /**
      * RedisClient constructor.
+     *
      * @param string $host
      * @param int $port
      * @param float $timeout
      */
     public function __construct($host, $port = 6379, $timeout = 0.0)
     {
-        $this->host    = $host;
-        $this->port    = $port;
+        $this->host = $host;
+        $this->port = $port;
         $this->timeout = $timeout;
     }
 
@@ -64,7 +65,7 @@ class RedisTransport extends RequestHandler
      */
     public function setDb($db)
     {
-        $this->db = (int)$db;
+        $this->db = (int) $db;
     }
 
     /**
@@ -72,21 +73,24 @@ class RedisTransport extends RequestHandler
      */
     public function setShardsNumber($shardsNumber)
     {
-        $this->shardsNumber = (int)$shardsNumber;
+        $this->shardsNumber = (int) $shardsNumber;
     }
 
     /**
      * Open Redis connection
+     *
      * @throws CentrifugoTransportException
      */
     public function openConnection()
     {
         $this->connection = new Redis();
         $this->connection->connect($this->host, $this->port, $this->timeout);
-        if(!$this->connection){
+
+        if (!$this->connection) {
             throw new CentrifugoTransportException('Failed to open redis DB connection.');
         }
-        if($this->db && !$this->connection->select($this->db)) {
+
+        if ($this->db && !$this->connection->select($this->db)) {
             throw new CentrifugoTransportException('Failed to select redis DB.');
         }
     }
@@ -96,7 +100,7 @@ class RedisTransport extends RequestHandler
      */
     public function closeConnection()
     {
-        if($this->connection){
+        if ($this->connection) {
             $this->connection->close();
         }
     }
@@ -106,16 +110,18 @@ class RedisTransport extends RequestHandler
      */
     protected function processing(Request $request)
     {
-        if(!$this->canProcessRequest($request)) {
+        if (!$this->canProcessRequest($request)) {
             throw new CentrifugoTransportException('RedisTransport can\'t process request.');
         }
+
         if (!$this->connection) {
             $this->openConnection();
         }
-        $queue   = $this->getQueue();
+
+        $queue = $this->getQueue();
         $message = $this->makeMassage($request);
 
-        if(false === $this->connection->rPush($queue, $message)){
+        if (false === $this->connection->rPush($queue, $message)) {
             throw new CentrifugoTransportException('RedisTransport can\'t push to: ' . $queue);
         }
 
@@ -126,13 +132,14 @@ class RedisTransport extends RequestHandler
 
     /**
      * @param Request $request
+     *
      * @return bool
      */
     protected function canProcessRequest(Request $request)
     {
-        if($request instanceof BatchRequest){
-            foreach ($request as $req){
-                if(!$this->isMethodSupported($req->getMethod())){
+        if ($request instanceof BatchRequest) {
+            foreach ($request as $req) {
+                if (!$this->isMethodSupported($req->getMethod())) {
                     return false;
                 }
             }
@@ -145,6 +152,7 @@ class RedisTransport extends RequestHandler
 
     /**
      * @param string $method
+     *
      * @return mixed
      */
     protected function isMethodSupported($method)
@@ -154,36 +162,39 @@ class RedisTransport extends RequestHandler
 
     /**
      * @param Request $request
+     *
      * @return mixed
      */
     protected function makeMassage(Request $request)
     {
         return json_encode([
-            'data' => $request instanceof BatchRequest ? $request->toArray() : [$request->toArray()]
+            'data' => $request instanceof BatchRequest ? $request->toArray() : [$request->toArray()],
         ]);
     }
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     protected function emulateResponse(Request $request)
     {
         return [
-            'body'   => $request->getParams(),
+            'body' => $request->getParams(),
             'method' => $request->getMethod(),
-            'error'  => null,
+            'error' => null,
         ];
     }
 
     /**
      * @param BatchRequest $request
+     *
      * @return array
      */
     protected function emulateBatchResponse(BatchRequest $request)
     {
         $response = [];
-        foreach ($request as $req){
+        foreach ($request as $req) {
             $response[] = $this->emulateResponse($req);
         }
 
@@ -195,7 +206,7 @@ class RedisTransport extends RequestHandler
      */
     protected function getQueue()
     {
-        if(!$this->shardsNumber){
+        if (!$this->shardsNumber) {
             return self::QUEUE_NAME;
         }
 

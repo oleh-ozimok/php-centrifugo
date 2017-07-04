@@ -19,12 +19,14 @@ class BatchResponse extends Response implements IteratorAggregate, ArrayAccess
 
     /**
      * BatchResponse constructor.
+     *
      * @param BatchRequest $batchRequest
      * @param Response $response
      */
     public function __construct(BatchRequest $batchRequest, Response $response)
     {
         parent::__construct($batchRequest, $response->getBody());
+
         $this->setResponses($response->getDecodedBody());
     }
 
@@ -42,15 +44,15 @@ class BatchResponse extends Response implements IteratorAggregate, ArrayAccess
     /**
      * Add a response to the list.
      *
-     * @param int        $key
+     * @param int $key
      * @param array|null $response
      */
     public function addResponse($key, array $response)
     {
         $originalRequest = isset($this->request[$key]) ? $this->request[$key] : null;
-        $responseBody    = isset($response['body']) ? $response['body'] : null;
-        $responseError   = isset($response['error']) ? $response['error'] : null;
-        $responseMethod  = isset($response['method']) ? $response['method'] : null;
+        $responseBody = isset($response['body']) ? $response['body'] : null;
+        $responseError = isset($response['error']) ? $response['error'] : null;
+        $responseMethod = isset($response['method']) ? $response['method'] : null;
 
         $this->responses[$key] = new Response($originalRequest, $responseBody, $responseError, $responseMethod);
     }

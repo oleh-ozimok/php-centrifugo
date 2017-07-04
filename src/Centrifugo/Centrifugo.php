@@ -24,23 +24,27 @@ class Centrifugo
      * @var Response
      */
     protected $lastResponse;
-    
+
     /**
      * Centrifugo constructor.
-     * @param $endpoint
-     * @param $secret
+     *
+     * @param string $endpoint
+     * @param string $secret
      * @param array $transportConfig
      */
     public function __construct($endpoint, $secret, array $transportConfig)
     {
         $this->endpoint = $endpoint;
-        $this->secret   = $secret;
-        $this->client   = new CentrifugoClient(TransportFactory::createChain($transportConfig));
+        $this->secret = $secret;
+        $this->client = new CentrifugoClient(TransportFactory::createChain($transportConfig));
     }
 
     /**
+     * Create request.
+     *
      * @param string $method
      * @param array $params
+     *
      * @return Request
      */
     public function request($method, $params = [])
@@ -50,8 +54,10 @@ class Centrifugo
 
     /**
      * Send message into channel.
+     *
      * @param string $channel
      * @param array $data
+     *
      * @return Response
      */
     public function publish($channel, array $data)
@@ -61,8 +67,10 @@ class Centrifugo
 
     /**
      * Very similar to publish but allows to send the same data into many channels.
+     *
      * @param array $channels
      * @param array $data
+     *
      * @return Response
      */
     public function broadcast(array $channels, array $data)
@@ -72,28 +80,34 @@ class Centrifugo
 
     /**
      * Unsubscribe user from channel.
+     *
      * @param $channel
      * @param $userId
+     *
      * @return Response
      */
     public function unsubscribe($channel, $userId)
     {
-        return $this->sendRequest('unsubscribe', ['channel' => $channel, 'user' => (string)$userId]);
+        return $this->sendRequest('unsubscribe', ['channel' => $channel, 'user' => (string) $userId]);
     }
 
     /**
-     * disconnect user by user ID.
-     * @param $userId
+     * Disconnect user by user ID.
+     *
+     * @param mixed $userId
+     *
      * @return Response
      */
     public function disconnect($userId)
     {
-        return $this->sendRequest('disconnect', ['user' => (string)$userId]);
+        return $this->sendRequest('disconnect', ['user' => (string) $userId]);
     }
 
     /**
      * Get channel presence information (all clients currently subscribed on this channel).
-     * @param $channel
+     *
+     * @param string $channel
+     *
      * @return Response
      */
     public function presence($channel)
@@ -103,7 +117,9 @@ class Centrifugo
 
     /**
      * Get channel history information (list of last messages sent into channel).
-     * @param $channel
+     *
+     * @param string $channel
+     *
      * @return Response
      */
     public function history($channel)
@@ -113,6 +129,7 @@ class Centrifugo
 
     /**
      * Get channels information (list of currently active channels).
+     *
      * @return Response
      */
     public function channels()
@@ -122,6 +139,7 @@ class Centrifugo
 
     /**
      * Get stats information about running server nodes.
+     *
      * @return Response
      */
     public function stats()
@@ -131,7 +149,9 @@ class Centrifugo
 
     /**
      * Get information about single Centrifugo node.
+     *
      * @param string $endpoint
+     *
      * @return Response
      */
     public function node($endpoint)
@@ -151,9 +171,11 @@ class Centrifugo
 
     /**
      * Generate client connection token.
+     *
      * @param string $user
      * @param string $timestamp
      * @param string $info
+     *
      * @return string
      */
     public function generateClientToken($user, $timestamp, $info = '')
@@ -167,10 +189,12 @@ class Centrifugo
     }
 
     /**
-     * Generate channel sign
+     * Generate channel sign.
+     *
      * @param string $client
      * @param string $channel
      * @param string $info
+     *
      * @return string
      */
     public function generateChannelSign($client, $channel, $info = '')
@@ -185,8 +209,10 @@ class Centrifugo
 
     /**
      * Send request.
+     *
      * @param string $method
      * @param array $params
+     *
      * @return Response
      * @throws Exceptions\CentrifugoException
      */
@@ -194,7 +220,7 @@ class Centrifugo
     {
         $request = $this->request($method, $params);
         $this->lastResponse = $this->sendBatchRequest([$request])->shiftResponses();
-        if($this->lastResponse->isError()){
+        if ($this->lastResponse->isError()) {
             $this->lastResponse->throwException();
         }
 
@@ -203,7 +229,9 @@ class Centrifugo
 
     /**
      * Send batch request.
+     *
      * @param Request[] $requests
+     *
      * @return BatchResponse
      */
     public function sendBatchRequest(array $requests)
