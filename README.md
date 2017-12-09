@@ -53,7 +53,7 @@ try {
     $response = $centrifugo->publish($channel, $messageData);
     
     //Very similar to publish but allows to send the same data into many channels.
-    $response = $centrifugo->broadcast($channel, $messageData);
+    $response = $centrifugo->broadcast($channels, $messageData);
     
     //Unsubscribe user from channel.
     $response = $centrifugo->unsubscribe($channel, $userId);
