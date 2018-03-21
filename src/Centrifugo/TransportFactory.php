@@ -72,6 +72,10 @@ abstract class TransportFactory
                     $redisClient->setShardsNumber($params['shardsNumber']);
                 }
 
+                if (isset($params['password'])) {
+                    $redisClient->setPassword($params['password']);
+                }
+
                 return $redisClient;
 
             default:

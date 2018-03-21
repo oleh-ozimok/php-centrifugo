@@ -40,7 +40,7 @@ class Response
      * Response constructor.
      *
      * @param Request $request
-     * @param array $body
+     * @param string|array $body
      * @param null $error
      * @param null $method
      */

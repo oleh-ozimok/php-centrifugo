@@ -28,6 +28,7 @@ $centrifugo = new Centrifugo($endpoint, $secret, [
         'db'           => 0,
         'timeout'      => 0.0,
         'shardsNumber' => 0,
+        'password'     => 'mypassword',
     ],
     'http' => [
         // Curl options
