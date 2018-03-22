@@ -114,3 +114,6 @@ try {
     // invalid response
 }
 ```
+
+## Related Projects
+[centrifugo-bundle](https://github.com/kismia/centrifugo-bundle) (under development)
