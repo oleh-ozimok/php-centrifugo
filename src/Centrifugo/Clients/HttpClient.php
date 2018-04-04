@@ -1,16 +1,15 @@
 <?php
 
-namespace Centrifugo\Transport;
+namespace Centrifugo\Clients;
 
 use Centrifugo\Exceptions\CentrifugoTransportException;
 use Centrifugo\Request;
-use Centrifugo\RequestHandler;
 
 /**
- * Class HttpTransport
- * @package Centrifugo\Transport
+ * Class HttpClient
+ * @package Centrifugo\Clients
  */
-class HttpTransport extends RequestHandler
+class HttpClient extends BaseClient
 {
     const HTTP_CODE_OK = 200;
 
@@ -32,7 +31,7 @@ class HttpTransport extends RequestHandler
     /**
      * @inheritdoc
      */
-    public function processing(Request $request)
+    public function processRequest(Request $request)
     {
         $connection = curl_init();
         try {

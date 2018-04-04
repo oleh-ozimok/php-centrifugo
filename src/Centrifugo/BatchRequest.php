@@ -34,7 +34,7 @@ class BatchRequest extends Request implements IteratorAggregate, ArrayAccess
     }
 
     /**
-     * @param $request
+     * @param mixed $request
      *
      * @return $this
      * @throws InvalidArgumentException

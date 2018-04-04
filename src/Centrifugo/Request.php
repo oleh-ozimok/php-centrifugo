@@ -93,7 +93,7 @@ class Request
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     protected function generateHashSign()
     {

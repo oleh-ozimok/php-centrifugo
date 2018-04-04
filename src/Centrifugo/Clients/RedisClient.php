@@ -1,50 +1,29 @@
 <?php
 
-namespace Centrifugo\Transport;
+namespace Centrifugo\Clients;
 
-use Centrifugo\BatchRequest;
-use Centrifugo\Exceptions\CentrifugoTransportException;
 use Centrifugo\Request;
-use Centrifugo\RequestHandler;
-use Redis;
+use Centrifugo\BatchRequest;
+use Centrifugo\Clients\Redis\TransportInterface;
+use Centrifugo\Exceptions\CentrifugoTransportException;
 
 /**
- * Class RedisTransport
- * @package Centrifugo\Transport
+ * Class RedisClient
+ * @package Centrifugo\Clients
  */
-class RedisTransport extends RequestHandler
+class RedisClient extends BaseClient
 {
     const QUEUE_NAME = 'centrifugo.api';
     const QUEUE_SHARD_PATTERN = 'centrifugo.api.%u';
 
     /**
-     * @var Redis
+     * @var TransportInterface
      */
-    protected $connection;
-    /**
-     * @var string
-     */
-    protected $host;
-    /**
-     * @var int
-     */
-    protected $port;
-    /**
-     * @var float
-     */
-    protected $timeout;
-    /**
-     * @var int
-     */
-    protected $db = 0;
+    protected $transport;
     /**
      * @var int
      */
     protected $shardsNumber = 0;
-    /**
-     * @var string
-     */
-    protected $password;
     /**
      * @var array
      */
@@ -53,23 +32,11 @@ class RedisTransport extends RequestHandler
     /**
      * RedisClient constructor.
      *
-     * @param string $host
-     * @param int $port
-     * @param float $timeout
+     * @param TransportInterface $transport
      */
-    public function __construct($host, $port = 6379, $timeout = 0.0)
+    public function __construct(TransportInterface $transport)
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->timeout = $timeout;
-    }
-
-    /**
-     * @param int $db
-     */
-    public function setDb($db)
-    {
-        $this->db = (int) $db;
+        $this->transport = $transport;
     }
 
     /**
@@ -81,61 +48,9 @@ class RedisTransport extends RequestHandler
     }
 
     /**
-     * @param string $password
-     */
-    public function setPassword($password)
-    {
-        $this->password = (string) $password;
-    }
-
-    /**
-     * Open Redis connection
-     *
-     * @throws CentrifugoTransportException
-     */
-    protected function openConnection()
-    {
-        $this->connection = new Redis();
-
-        if (!$this->connection->connect($this->host, $this->port, $this->timeout)) {
-            throw new CentrifugoTransportException('Failed to open redis DB connection.');
-        }
-
-        if ($this->password && !$this->connection->auth($this->password)) {
-            throw new CentrifugoTransportException('Failed to authenticate redis connection.');
-        }
-
-        if ($this->db && !$this->connection->select($this->db)) {
-            throw new CentrifugoTransportException('Failed to select redis DB.');
-        }
-    }
-
-    /**
-     * Close connection if opened
-     */
-    protected function closeConnection()
-    {
-        if ($this->connection) {
-            $this->connection->close();
-        }
-    }
-
-    /**
-     * @return Redis
-     */
-    protected function getConnection()
-    {
-        if(!$this->connection){
-            $this->openConnection();
-        }
-
-        return $this->connection;
-    }
-
-    /**
      * @inheritdoc
      */
-    protected function processing(Request $request)
+    protected function processRequest(Request $request)
     {
         if (!$this->canProcessRequest($request)) {
             throw new CentrifugoTransportException('RedisTransport can\'t process request.');
@@ -144,7 +59,7 @@ class RedisTransport extends RequestHandler
         $queue = $this->getQueue();
         $message = $this->makeMassage($request);
 
-        if (false === $this->getConnection()->rPush($queue, $message)) {
+        if (false === $this->transport->rPush($queue, $message)) {
             throw new CentrifugoTransportException('RedisTransport can\'t push to: ' . $queue);
         }
 
@@ -234,13 +149,5 @@ class RedisTransport extends RequestHandler
         }
 
         return sprintf(self::QUEUE_SHARD_PATTERN, rand(0, $this->shardsNumber - 1));
-    }
-
-    /**
-     * Close Redis connection
-     */
-    public function __destruct()
-    {
-        $this->closeConnection();
     }
 }
