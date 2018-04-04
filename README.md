@@ -1,4 +1,4 @@
-# php-centrifugo - version 2
+# php-centrifugo - v2, [v1](https://github.com/oleh-ozimok/php-centrifugo/tree/v1.0)
 
 PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time messaging server
 
