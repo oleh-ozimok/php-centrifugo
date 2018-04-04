@@ -17,7 +17,7 @@ class Centrifugo
      */
     protected $secret;
     /**
-     * @var CentrifugoClient
+     * @var ClientInterface
      */
     protected $client;
     /**
@@ -30,13 +30,13 @@ class Centrifugo
      *
      * @param string $endpoint
      * @param string $secret
-     * @param array $transportConfig
+     * @param ClientInterface $client
      */
-    public function __construct($endpoint, $secret, array $transportConfig)
+    public function __construct($endpoint, $secret, ClientInterface $client)
     {
         $this->endpoint = $endpoint;
         $this->secret = $secret;
-        $this->client = new CentrifugoClient(TransportFactory::createChain($transportConfig));
+        $this->client = $client;
     }
 
     /**
@@ -47,7 +47,7 @@ class Centrifugo
      *
      * @return Request
      */
-    public function request($method, $params = [])
+    public function request($method, array $params = [])
     {
         return new Request($this->endpoint, $this->secret, $method, $params);
     }
@@ -81,8 +81,8 @@ class Centrifugo
     /**
      * Unsubscribe user from channel.
      *
-     * @param $channel
-     * @param $userId
+     * @param string $channel
+     * @param string $userId
      *
      * @return Response
      */
@@ -94,7 +94,7 @@ class Centrifugo
     /**
      * Disconnect user by user ID.
      *
-     * @param mixed $userId
+     * @param string $userId
      *
      * @return Response
      */
@@ -219,7 +219,7 @@ class Centrifugo
     public function sendRequest($method, $params = [])
     {
         $request = $this->request($method, $params);
-        $this->lastResponse = $this->sendBatchRequest([$request])->shiftResponses();
+        $this->lastResponse = $this->client->sendRequest($request);
         if ($this->lastResponse->isError()) {
             $this->lastResponse->throwException();
         }

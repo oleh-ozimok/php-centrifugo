@@ -1,4 +1,4 @@
-# php-centrifugo - version 1
+# php-centrifugo - version 2
 
 PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time messaging server
 
@@ -7,6 +7,7 @@ PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time
 * Support publishing messages via Redis engine API listener (publish, broadcast, unsubscribe, disconnect methods only)
 * Support transport chain (Redis + HTTP) as failover. If Redis down (or method not supported by Redis transport) client try send message via HTTP transport
 * Support batch requests
+* Support Predis
 
 ## Quick Examples
 
@@ -16,25 +17,33 @@ PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time
 <?php
 
 use Centrifugo\Centrifugo;
+use Centrifugo\Clients\RedisClient;
+use Centrifugo\Clients\HttpClient;
+use Centrifugo\Clients\Redis\RedisTransport;
+use Centrifugo\Clients\Redis\PredisTransport;
 
-$endpoint = 'http://example.com/api/';
-$secret = 'secret api key';
+// Create Redis transport
 
-$centrifugo = new Centrifugo($endpoint, $secret, [
-    'redis' => [
-        'host'         => 'localhost',
-        // additional params
-        'port'         => 6379,
-        'db'           => 0,
-        'timeout'      => 0.0,
-        'shardsNumber' => 0,
-        'password'     => 'mypassword',
-    ],
-    'http' => [
-        // Curl options
-        CURLOPT_TIMEOUT => 5,
-    ],
-]);
+$redis = new \Redis();
+$redis->connect('localhost');
+$redisTransport = new RedisTransport($redis);
+
+// Or Predis transport
+
+$predis = new Predis\Client(['host'   => 'localhost']);
+$redisTransport = new PredisTransport($predis);
+
+// Create Centrifugo RedisClient
+
+$centrifugoRedisClient = new RedisClient($redisTransport);
+$centrifugoRedisClient->setShardsNumber(12);
+
+// Add Centrifugo HttpClient as failover
+
+$centrifugoHttpClient = new HttpClient();
+$centrifugoRedisClient->setFailover($centrifugoHttpClient);
+
+$centrifugo = new Centrifugo('http://example.com/api/', 'secret api key', $centrifugoRedisClient);
 ```
 
 ### Send request to Centrifugo
@@ -54,7 +63,7 @@ try {
     $response = $centrifugo->publish($channel, $messageData);
     
     //Very similar to publish but allows to send the same data into many channels.
-    $response = $centrifugo->broadcast($channels, $messageData);
+    $response = $centrifugo->broadcast([$channel], $messageData);
     
     //Unsubscribe user from channel.
     $response = $centrifugo->unsubscribe($channel, $userId);
