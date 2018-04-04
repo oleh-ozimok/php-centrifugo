@@ -5,7 +5,7 @@ PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time
 ## Features
 
 * Support publishing messages via Redis engine API listener (publish, broadcast, unsubscribe, disconnect methods only)
-* Support transport chain (Redis + HTTP) as failover. If Redis down (or method not supported by Redis transport) client try send message via HTTP transport
+* Support client chain (Redis -> HTTP -> ...) as failover. If Redis down or method not supported by Redis engine API, client try send message via HTTP
 * Support batch requests
 * Support Predis
 
