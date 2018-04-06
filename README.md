@@ -17,6 +17,17 @@ PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time
 <?php
 
 use Centrifugo\Centrifugo;
+use Centrifugo\Clients\HttpClient;
+
+$centrifugo = new Centrifugo('http://example.com/api/', 'secret api key', new HttpClient());
+```
+
+### Create Centrifugo client with Redis API support
+
+```php
+<?php
+
+use Centrifugo\Centrifugo;
 use Centrifugo\Clients\RedisClient;
 use Centrifugo\Clients\HttpClient;
 use Centrifugo\Clients\Redis\RedisTransport;
@@ -45,7 +56,6 @@ $centrifugoRedisClient->setFailover($centrifugoHttpClient);
 
 $centrifugo = new Centrifugo('http://example.com/api/', 'secret api key', $centrifugoRedisClient);
 ```
-
 ### Send request to Centrifugo
 
 ```php
