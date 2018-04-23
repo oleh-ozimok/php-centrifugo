@@ -1,5 +1,9 @@
 # php-centrifugo - v2, [v1](https://github.com/oleh-ozimok/php-centrifugo/tree/v1.0)
 
+[![Latest Stable Version](https://poser.pugx.org/oleh-ozimok/php-centrifugo/v/stable)](https://packagist.org/packages/oleh-ozimok/php-centrifugo) 
+[![Total Downloads](https://poser.pugx.org/oleh-ozimok/php-centrifugo/downloads)](https://packagist.org/packages/oleh-ozimok/php-centrifugo) 
+[![License](https://poser.pugx.org/oleh-ozimok/php-centrifugo/license)](https://packagist.org/packages/oleh-ozimok/php-centrifugo)
+
 PHP client for [Centrifugo](https://github.com/centrifugal/centrifugo) real-time messaging server
 
 ## Features
