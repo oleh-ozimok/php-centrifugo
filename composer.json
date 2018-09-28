@@ -1,6 +1,7 @@
 {
   "name": "khvalov/php-centrifugo",
   "type": "library",
+  "version": "2.0.0-dev",
   "description": "PHP client for Centrifugo real-time messaging server (Adobted for v2) ",
   "keywords": ["centrifugo", "real-time"],
   "license": "MIT",
