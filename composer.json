@@ -1,7 +1,8 @@
 {
-  "name": "oleh-ozimok/php-centrifugo",
+  "name": "khvalov/php-centrifugo",
   "type": "library",
-  "description": "PHP client for Centrifugo real-time messaging server",
+  "version": "2.0.0-dev",
+  "description": "PHP client for Centrifugo real-time messaging server (Adobted for v2) ",
   "keywords": ["centrifugo", "real-time"],
   "license": "MIT",
   "homepage": "https://github.com/oleh-ozimok/php-centrifugo",
@@ -9,11 +10,16 @@
     {
       "name": "Oleh Ozimok",
       "email": "ozimok.oleg@gmail.com"
+    },
+    {
+      "name": "V Kh",
+      "email": "khvalov.valery@gmail.com"
     }
   ],
   "require": {
     "php": ">=5.4.0",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "firebase/php-jwt": "@dev"
   },
   "require-dev": {
     "predis/predis": "^1.1"

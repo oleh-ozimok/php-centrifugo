@@ -2,6 +2,8 @@
 
 namespace Centrifugo;
 
+use \Firebase\JWT\JWT;
+
 /**
  * Class Centrifugo
  * @package Centrifugo
@@ -104,6 +106,18 @@ class Centrifugo
     }
 
     /**
+     * allows to get short channel presence information.
+     *
+     * @param string $channel
+     *
+     * @return Response
+     */
+    public function presence_stats($channel)
+    {
+        return $this->sendRequest('presence', ['channel' => $channel]);
+    }
+
+     /**
      * Get channel presence information (all clients currently subscribed on this channel).
      *
      * @param string $channel
@@ -138,27 +152,13 @@ class Centrifugo
     }
 
     /**
-     * Get stats information about running server nodes.
+     * method allows to get information about running Centrifugo nodes.
      *
      * @return Response
      */
-    public function stats()
+    public function info()
     {
-        return $this->sendRequest('stats');
-    }
-
-    /**
-     * Get information about single Centrifugo node.
-     *
-     * @param string $endpoint
-     *
-     * @return Response
-     */
-    public function node($endpoint)
-    {
-        $request = new Request($endpoint, $this->secret, 'node', []);
-
-        return $this->sendBatchRequest([$request]);
+        return $this->sendRequest('info');
     }
 
     /**
@@ -169,43 +169,6 @@ class Centrifugo
         return $this->lastResponse;
     }
 
-    /**
-     * Generate client connection token.
-     *
-     * @param string $user
-     * @param string $timestamp
-     * @param string $info
-     *
-     * @return string
-     */
-    public function generateClientToken($user, $timestamp, $info = '')
-    {
-        $ctx = hash_init('sha256', HASH_HMAC, $this->secret);
-        hash_update($ctx, $user);
-        hash_update($ctx, $timestamp);
-        hash_update($ctx, $info);
-
-        return hash_final($ctx);
-    }
-
-    /**
-     * Generate channel sign.
-     *
-     * @param string $client
-     * @param string $channel
-     * @param string $info
-     *
-     * @return string
-     */
-    public function generateChannelSign($client, $channel, $info = '')
-    {
-        $ctx = hash_init('sha256', HASH_HMAC, $this->secret);
-        hash_update($ctx, $client);
-        hash_update($ctx, $channel);
-        hash_update($ctx, $info);
-
-        return hash_final($ctx);
-    }
 
     /**
      * Send request.
@@ -239,5 +202,32 @@ class Centrifugo
         $batchRequest = new BatchRequest($this->endpoint, $this->secret, $requests);
 
         return $this->lastResponse = $this->client->sendBatchRequest($batchRequest);
+    }
+
+    /**
+     * Create Clients JSON Web Token 
+     *
+     * @param string $secret
+     * @param string $user
+     * @param string $exp
+     * @param string $info
+     *
+     * @return token
+     */
+
+    public static function createClientJWT($secret,$user,$exp,$info){
+
+
+        $token = array(
+            "sub"=>(string)$user,
+            "info"=>$info
+        );
+
+         if($exp!==null){
+            array_push($token, ["exp"=>$exp]);
+        }
+
+        return JWT::encode($token, $secret);
+
     }
 }

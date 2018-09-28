@@ -34,6 +34,7 @@ class HttpClient extends BaseClient
     public function processRequest(Request $request)
     {
         $connection = curl_init();
+
         try {
             curl_setopt_array($connection, $this->options);
             curl_setopt_array($connection, [
