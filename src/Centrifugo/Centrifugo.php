@@ -2,6 +2,8 @@
 
 namespace Centrifugo;
 
+use \Firebase\JWT\JWT;
+
 /**
  * Class Centrifugo
  * @package Centrifugo
@@ -200,5 +202,32 @@ class Centrifugo
         $batchRequest = new BatchRequest($this->endpoint, $this->secret, $requests);
 
         return $this->lastResponse = $this->client->sendBatchRequest($batchRequest);
+    }
+
+    /**
+     * Create Clients JSON Web Token 
+     *
+     * @param string $secret
+     * @param string $user
+     * @param string $exp
+     * @param string $info
+     *
+     * @return token
+     */
+
+    public static function createClientJWT($secret,$user,$exp,$info){
+
+
+        $token = array(
+            "sub"=>(string)$user,
+            "info"=>$info
+        );
+
+         if($exp!==null){
+            array_push($token, ["exp"=>$exp]);
+        }
+
+        return JWT::encode($token, $secret);
+
     }
 }

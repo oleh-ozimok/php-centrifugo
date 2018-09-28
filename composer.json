@@ -1,5 +1,5 @@
 {
-  "name": "khvalov/php-centrifugo",
+  "name": "oleh-ozimok/php-centrifugo",
   "type": "library",
   "version": "2.0.0-dev",
   "description": "PHP client for Centrifugo real-time messaging server (Adobted for v2) ",
