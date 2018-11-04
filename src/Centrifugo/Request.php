@@ -80,7 +80,7 @@ class Request
     {
         return [
             'Content-Type: application/json',
-            'X-API-Sign: ' . $this->generateHashSign(),
+            'Authorization: apikey ' . $this->secret,
         ];
     }
 
@@ -90,16 +90,5 @@ class Request
     public function toArray()
     {
         return ['method' => $this->method, 'params' => $this->params];
-    }
-
-    /**
-     * @return string
-     */
-    protected function generateHashSign()
-    {
-        $ctx = hash_init('sha256', HASH_HMAC, $this->secret);
-        hash_update($ctx, $this->getEncodedParams());
-
-        return hash_final($ctx);
     }
 }

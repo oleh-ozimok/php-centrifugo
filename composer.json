@@ -13,7 +13,8 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "firebase/php-jwt": "^5.0"
   },
   "require-dev": {
     "predis/predis": "^1.1"
