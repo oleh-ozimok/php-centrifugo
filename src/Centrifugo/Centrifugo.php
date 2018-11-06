@@ -2,6 +2,8 @@
 
 namespace Centrifugo;
 
+use \Firebase\JWT\JWT;
+
 /**
  * Class Centrifugo
  * @package Centrifugo
@@ -178,7 +180,7 @@ class Centrifugo
      *
      * @return string
      */
-    public function generateClientToken(string $user, ?string $timestamp, string $info = '')
+    public function generateClientToken(string $user, string $timestamp = '', string $info = '')
     {
         $params = ['sub' => $user];
 
