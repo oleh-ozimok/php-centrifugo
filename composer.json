@@ -1,18 +1,18 @@
 {
-  "name": "oleh-ozimok/php-centrifugo",
+  "name": "zelindm/php-centrifugo",
   "type": "library",
-  "description": "PHP client for Centrifugo real-time messaging server",
+  "description": "PHP client for Centrifugo 2.3 real-time messaging server",
   "keywords": ["centrifugo", "real-time"],
   "license": "MIT",
-  "homepage": "https://github.com/oleh-ozimok/php-centrifugo",
+  "homepage": "https://github.com/zelindm/php-centrifugo",
   "authors": [
     {
-      "name": "Oleh Ozimok",
-      "email": "ozimok.oleg@gmail.com"
+      "name": "Zelinskiy Dmitriy",
+      "email": "zelindm@gmail.com"
     }
   ],
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=7.2.0",
     "ext-curl": "*"
   },
   "require-dev": {
