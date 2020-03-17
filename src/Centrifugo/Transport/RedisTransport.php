@@ -57,7 +57,7 @@ class RedisTransport extends RequestHandler
      * @param int $port
      * @param float $timeout
      */
-    public function __construct($host, $port = 6379, $timeout = 0.0)
+    public function __construct($host, $port = 6379, $timeout = 15.0)
     {
         $this->host = $host;
         $this->port = $port;
